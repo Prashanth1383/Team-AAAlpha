@@ -10,11 +10,9 @@ EduBridge AI is a local web application that helps students find knowledge gaps,
 The workspace did not include official HackOverflow 10.0 theme documents. This project is implemented as a practical education tool rather than a claim about a specific published theme.
 
 ## Problem statement
-
 Students often cannot tell which topics are actually weak, and generic learning paths ignore individual quiz performance, available study time, and career-oriented tracks. Searching for resources is disconnected from those results.
 
 ## Proposed solution
-
 EduBridge AI stores a learning goal, serves a diagnostic multiple-choice quiz, scores answers by topic, labels skill-gap bands with explicit rules, recommends public documentation, and writes a day-by-day study plan to SQLite. Dashboard and progress views read those stored records.
 
 ## Key features

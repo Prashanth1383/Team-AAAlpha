@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Skill-gap analysis{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <h1>Skill-gap analysis</h1>
+    <p class="muted">{{ attempt.track }} · {{ attempt.created_at }} UTC. Bands are learning guidelines, not a scientific ability score.</p>
+  </div>
+  <div class="action-row">
+    <a class="btn btn-secondary" href="{{ url_for('pages.quiz') }}">Retake quiz</a>
+    <a class="btn btn-primary" href="{{ url_for('pages.study_plan') }}">Build study plan</a>
+  </div>
+</section>
+
+<div class="stat-grid">
+  <article class="stat">
+    <span>Overall score</span>
+    <strong>{{ "%.1f"|format(attempt.score_percent) }}%</strong>
+  </article>
+  <article class="stat">
+    <span>Correct answers</span>
+    <strong>{{ attempt.correct_count }} / {{ attempt.total_questions }}</strong>
+  </article>
+  <article class="stat">
+    <span>Topics needing practice</span>
+    <strong>{{ classified.needs_practice|length }}</strong>
+  </article>
+  <article class="stat">
+    <span>Strong topics</span>
+    <strong>{{ classified.strong|length }}</strong>
+  </article>
+</div>
+
+<section class="panel">
+  <h2>Topic-wise scores</h2>
+  <ul class="topic-list">
+    {% for topic in topic_results %}
+      <li>
+        <div class="topic-score">
+          <span>{{ topic.topic }} · {{ topic.correct_count }}/{{ topic.total_count }}</span>
+          <div class="progress-track" aria-hidden="true">
+            <div class="progress-fill" style="width: {{ topic.score_percent }}%"></div>
+          </div>
+        </div>
+        <span class="pill pill-{{ topic.band }}">{{ band_label(topic.band) }} · {{ "%.0f"|format(topic.score_percent) }}%</span>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+
+<div class="split">
+  <section class="panel">
+    <h2>Strong topics</h2>
+    {% if classified.strong %}
+      <ul>{% for topic in classified.strong %}<li>{{ topic.topic }}</li>{% endfor %}</ul>
+    {% else %}
+      <p class="muted">No topic reached 75% on this attempt.</p>
+    {% endif %}
+  </section>
+  <section class="panel">
+    <h2>Developing</h2>
+    {% if classified.developing %}
+      <ul>{% for topic in classified.developing %}<li>{{ topic.topic }}</li>{% endfor %}</ul>
+    {% else %}
+      <p class="muted">No topic scored between 50% and 74% on this attempt.</p>
+    {% endif %}
+  </section>
+  <section class="panel">
+    <h2>Topics needing practice</h2>
+    {% if classified.needs_practice %}
+      <ul>{% for topic in classified.needs_practice %}<li>{{ topic.topic }}</li>{% endfor %}</ul>
+    {% else %}
+      <p class="muted">No topic scored below 50% on this attempt.</p>
+    {% endif %}
+  </section>
+</div>
+
+<section class="panel">
+  <h2>Recommended next steps</h2>
+  <ol class="steps">{% for step in next_steps %}<li>{{ step }}</li>{% endfor %}</ol>
+</section>
+
+<section class="panel">
+  <h2>Answer review</h2>
+  {% for item in details %}
+    <article class="review-item {% if item.is_correct %}is-correct{% else %}is-wrong{% endif %}">
+      <p><strong>{{ item.topic }}.</strong> {{ item.question_text }}</p>
+      <p>Your answer: {{ item.selected_option }}{% if not item.is_correct %} · Correct: {{ item.correct_option }}{% endif %}</p>
+      <p class="muted">{{ item.explanation }}</p>
+    </article>
+  {% endfor %}
+</section>
+{% endblock %}

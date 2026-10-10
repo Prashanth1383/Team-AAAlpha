@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}EduBridge AI{% endblock %}
+{% block content %}
+<section class="hero-grid">
+  <div class="hero">
+    <p class="eyebrow">HackOverflow 10.0 · Team AAAlpha</p>
+    <h1>Your Learning Journey, Made Personal.</h1>
+    <p class="lede">
+      Students often know they need to study, but not which topics are holding them back.
+      EduBridge AI uses diagnostic quizzes, transparent skill-gap rules, and a resource catalog
+      to build a study plan that matches your track, time, and current results.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="{{ url_for('pages.login') }}">Start Learning</a>
+      <a class="btn btn-secondary" href="#features">Explore Features</a>
+    </div>
+  </div>
+  <aside class="hero-panel" aria-label="Workflow preview">
+    <p class="eyebrow">Local workflow</p>
+    <ol class="hero-flow">
+      <li><strong>Choose a track</strong> and how many minutes you can study.</li>
+      <li><strong>Take a quiz</strong> scored on the server by topic.</li>
+      <li><strong>See gaps</strong> using 50% and 75% score bands.</li>
+      <li><strong>Follow a plan</strong> linked to public documentation.</li>
+    </ol>
+  </aside>
+</section>
+
+<section id="features" class="section">
+  <h2>What the platform does</h2>
+  <div class="card-grid">
+    <article class="card">
+      <i data-lucide="target"></i>
+      <h3>Learning goals</h3>
+      <p>Choose a technical track, experience level, daily study time, and a target duration.</p>
+    </article>
+    <article class="card">
+      <i data-lucide="clipboard-check"></i>
+      <h3>Diagnostic quizzes</h3>
+      <p>Answer multiple-choice questions and receive topic-level scores after you submit.</p>
+    </article>
+    <article class="card">
+      <i data-lucide="scan-search"></i>
+      <h3>Skill-gap analysis</h3>
+      <p>Topics below 50% are flagged for focused practice. 50–74% are developing. 75%+ show good progress.</p>
+    </article>
+    <article class="card">
+      <i data-lucide="calendar-range"></i>
+      <h3>Study plans</h3>
+      <p>A rule-based engine allocates days to weaker topics and links catalog resources.</p>
+    </article>
+    <article class="card">
+      <i data-lucide="library"></i>
+      <h3>Resource explorer</h3>
+      <p>Search official documentation and public references such as Python docs, MDN, and Java tutorials.</p>
+    </article>
+    <article class="card">
+      <i data-lucide="line-chart"></i>
+      <h3>Progress tracking</h3>
+      <p>Dashboard and analytics charts read quiz attempts and task completion from SQLite.</p>
+    </article>
+  </div>
+</section>
+
+<section class="section">
+  <h2>How it works</h2>
+  <ol class="steps">
+    <li><strong>Set a goal.</strong> Pick a track and how much time you can study.</li>
+    <li><strong>Take a quiz.</strong> Questions are stored in the database and scored on the server.</li>
+    <li><strong>Review gaps.</strong> Each topic is labeled using published score bands.</li>
+    <li><strong>Follow a plan.</strong> Daily tasks are generated from your latest results, then you mark them complete.</li>
+  </ol>
+</section>
+
+<section class="section">
+  <h2>Sample dashboard layout</h2>
+  <p class="muted">Preview of the interface. Live numbers appear after you save a goal and complete a quiz.</p>
+  <div class="preview-board" aria-hidden="true">
+    <div class="stat-grid">
+      <div class="stat"><span>Quizzes</span><strong>—</strong></div>
+      <div class="stat"><span>Average score</span><strong>—</strong></div>
+      <div class="stat"><span>Plan progress</span><strong>—</strong></div>
+      <div class="stat"><span>Focus topics</span><strong>—</strong></div>
+    </div>
+    <div class="preview-chart">Score history appears here after real attempts are stored.</div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Why this helps students</h2>
+  <ul class="benefit-list">
+    <li>Turns a generic syllabus into a sequence based on measured topic scores.</li>
+    <li>Keeps study time bounded by the minutes and days you actually have.</li>
+    <li>Points to public documentation instead of an unbounded content feed.</li>
+    <li>Shows empty states honestly when you have not taken a quiz yet.</li>
+  </ul>
+</section>
+{% endblock %}

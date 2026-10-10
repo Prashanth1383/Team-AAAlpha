@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Progress{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <h1>Progress and analytics</h1>
+    <p class="muted">Every chart and percentage below is computed from SQLite records for this demo profile.</p>
+  </div>
+</section>
+
+<p class="callout">{{ suggested_next_action }}</p>
+
+{% if not has_history %}
+  <div class="empty-state panel">
+    <i data-lucide="bar-chart-3"></i>
+    <p>No quiz history yet. Scores over time will appear after you submit a diagnostic quiz.</p>
+    <a class="btn btn-primary" href="{{ url_for('pages.quiz') }}">Take a quiz</a>
+  </div>
+{% else %}
+  <section class="panel">
+    <h2>Quiz scores over time</h2>
+    <canvas id="scoreChart" height="120" aria-label="Historical quiz scores"></canvas>
+  </section>
+{% endif %}
+
+<section class="panel">
+  <h2>Topic-wise progress (latest attempt per topic)</h2>
+  {% if topic_progress %}
+    <ul class="topic-list">
+      {% for topic in topic_progress %}
+        <li>
+          <span>{{ topic.topic }}</span>
+          <span class="pill pill-{{ topic.band }}">{{ band_label(topic.band) }} · {{ "%.0f"|format(topic.score_percent) }}%</span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="muted">Topic scores appear after a quiz is stored.</p>
+  {% endif %}
+</section>
+
+<section class="panel">
+  <h2>Study tasks</h2>
+  {% if current_plan %}
+    <p>{{ current_plan.completed_count }} completed · {{ current_plan.total_count }} total · {{ "%.0f"|format(current_plan.completion_percent) }}% of the current plan.</p>
+    <ul>
+      {% for task in current_plan.tasks if task.is_completed %}
+        <li>Day {{ task.day_number }}: {{ task.topic }}</li>
+      {% endfor %}
+    </ul>
+    {% if current_plan.completed_count == 0 %}
+      <p class="muted">No tasks marked complete yet.</p>
+    {% endif %}
+  {% else %}
+    <p class="muted">No study plan is saved.</p>
+  {% endif %}
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script id="dashboard-data" type="application/json">{{ score_history | tojson }}</script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <h1>Welcome, {{ student_name }}</h1>
+    <p class="muted">Your dashboard reflects stored quiz attempts, preferences, and study tasks.</p>
+  </div>
+  <div class="action-row">
+    <a class="btn btn-primary" href="{{ url_for('pages.quiz') }}">Take Quiz</a>
+    <a class="btn btn-secondary" href="{{ url_for('pages.study_plan') }}">View Study Plan</a>
+    <a class="btn btn-ghost" href="{{ url_for('pages.resources') }}">Explore Resources</a>
+  </div>
+</section>
+
+<div class="stat-grid">
+  <article class="stat">
+    <span>Learning goal</span>
+    <strong>{{ preferences.track if preferences else "Not set" }}</strong>
+  </article>
+  <article class="stat">
+    <span>Quizzes completed</span>
+    <strong>{{ quizzes_completed }}</strong>
+  </article>
+  <article class="stat">
+    <span>Average quiz score</span>
+    <strong>{% if average_score is not none %}{{ "%.1f"|format(average_score) }}%{% else %}—{% endif %}</strong>
+  </article>
+  <article class="stat">
+    <span>Study plan completion</span>
+    <strong>{% if current_plan %}{{ "%.0f"|format(current_plan.completion_percent) }}%{% else %}—{% endif %}</strong>
+  </article>
+</div>
+
+<p class="callout">{{ suggested_next_action }}</p>
+
+<div class="split">
+  <section class="panel">
+    <h2>Skills needing improvement</h2>
+    {% if weak_topics %}
+      <ul class="topic-list">
+        {% for topic in weak_topics %}
+          <li>
+            <span>{{ topic.topic }}</span>
+            <span class="pill pill-{{ topic.band }}">{{ band_label(topic.band) }} · {{ "%.0f"|format(topic.score_percent) }}%</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="empty-state compact">
+        <p>No improvement list yet. Complete a diagnostic quiz to calculate topic scores.</p>
+      </div>
+    {% endif %}
+  </section>
+  <section class="panel">
+    <h2>Current study plan</h2>
+    {% if current_plan %}
+      <p>{{ current_plan.plan.summary }}</p>
+      <p class="muted">{{ current_plan.completed_count }} of {{ current_plan.total_count }} tasks complete.</p>
+      <a href="{{ url_for('pages.study_plan') }}">Open the full plan</a>
+    {% else %}
+      <div class="empty-state compact">
+        <p>No study plan saved. Generate one after a quiz.</p>
+        <a class="btn btn-secondary" href="{{ url_for('pages.study_plan') }}">Go to study plan</a>
+      </div>
+    {% endif %}
+  </section>
+</div>
+
+<section class="panel">
+  <h2>Learning progress</h2>
+  {% if score_history %}
+    <canvas id="scoreChart" height="120" aria-label="Quiz scores over time"></canvas>
+  {% else %}
+    <div class="empty-state compact">
+      <p>Charts appear after at least one quiz attempt is stored.</p>
+    </div>
+  {% endif %}
+</section>
+
+<section class="panel">
+  <h2>Recent quiz attempts</h2>
+  {% if recent_attempts %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>When (UTC)</th>
+            <th>Track</th>
+            <th>Score</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for attempt in recent_attempts %}
+            <tr>
+              <td>{{ attempt.created_at }}</td>
+              <td>{{ attempt.track }}</td>
+              <td>{{ "%.1f"|format(attempt.score_percent) }}%</td>
+              <td><a href="{{ url_for('pages.analysis', attempt_id=attempt.id) }}">View analysis</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state compact">
+      <p>You have not completed a quiz yet.</p>
+      <a class="btn btn-primary" href="{{ url_for('pages.quiz') }}">Take a quiz</a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script id="dashboard-data" type="application/json">{{ score_history | tojson }}</script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

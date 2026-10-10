@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Sign in{% endblock %}
+{% block content %}
+<section class="auth-shell">
+  <div class="auth-copy">
+    <p class="eyebrow">Access your study dashboard</p>
+    <h1>Welcome back</h1>
+    <p>Sign in with your username and password to continue your personalized learning plan.</p>
+    <ul class="auth-points">
+      <li>Track your learning goals</li>
+      <li>Review quiz results and gaps</li>
+      <li>Follow your daily study plan</li>
+    </ul>
+  </div>
+
+  <div class="auth-card">
+    <div class="brand-badge" aria-hidden="true"><i data-lucide="graduation-cap"></i></div>
+    <h2>Sign in</h2>
+    <form method="post" class="auth-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label>
+        <span>Username</span>
+        <input type="text" name="username" value="{{ form.get('username', '') }}" placeholder="Enter username" required>
+      </label>
+      <label>
+        <span>Password</span>
+        <input type="password" name="password" placeholder="Enter password" required>
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+      <p class="auth-switch">
+        Need an account?
+        <a href="{{ url_for('pages.signup') }}">Create one</a>
+      </p>
+    </form>
+  </div>
+</section>
+{% endblock %}

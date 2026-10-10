@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Learning goals{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <h1>Learning goal setup</h1>
+    <p class="muted">Tell EduBridge which track you are preparing for and how much time you can give it.</p>
+  </div>
+</section>
+<form class="panel form-grid" method="post" novalidate data-validate="goals">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <label>
+    Learning track
+    <select name="track" required>
+      <option value="">Select a track</option>
+      {% for track in tracks %}
+        <option value="{{ track }}" {% if form.get('track') == track %}selected{% endif %}>{{ track }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <fieldset>
+    <legend>Current experience level</legend>
+    {% for level in levels %}
+      <label class="choice">
+        <input type="radio" name="experience_level" value="{{ level }}" required {% if form.get('experience_level') == level %}checked{% endif %}>
+        {{ level|capitalize }}
+      </label>
+    {% endfor %}
+  </fieldset>
+  <label>
+    Daily available study time (minutes)
+    <input type="number" name="daily_minutes" min="15" max="240" required value="{{ form.get('daily_minutes', 45) }}">
+    <span class="hint">Between 15 and 240 minutes.</span>
+  </label>
+  <label>
+    Target duration (days)
+    <input type="number" name="target_days" min="7" max="90" required value="{{ form.get('target_days', 14) }}">
+    <span class="hint">Between 7 and 90 days. This is a planning window, not a mastery deadline.</span>
+  </label>
+  <button class="btn btn-primary" type="submit">Save learning goal</button>
+</form>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Learning resources{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <h1>Learning resource explorer</h1>
+    <p class="muted">Catalog entries point to public documentation. Links open in a new tab.</p>
+  </div>
+</section>
+<form class="filter-bar panel" method="get">
+  <label>
+    Search
+    <input type="search" name="q" value="{{ selected.q }}" placeholder="Title, topic, or description">
+  </label>
+  <label>
+    Track
+    <select name="track">
+      <option value="">All tracks</option>
+      {% for track in tracks %}
+        <option value="{{ track }}" {% if selected.track == track %}selected{% endif %}>{{ track }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>
+    Topic
+    <select name="topic">
+      <option value="">All topics</option>
+      {% for topic in topics %}
+        <option value="{{ topic }}" {% if selected.topic == topic %}selected{% endif %}>{{ topic }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>
+    Difficulty
+    <select name="difficulty">
+      <option value="">All levels</option>
+      {% for difficulty in difficulties %}
+        <option value="{{ difficulty }}" {% if selected.difficulty == difficulty %}selected{% endif %}>{{ difficulty }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <button class="btn btn-primary" type="submit">Filter</button>
+  <a class="btn btn-ghost" href="{{ url_for('pages.resources') }}">Reset</a>
+</form>
+
+{% if resources %}
+  <div class="card-grid">
+    {% for item in resources %}
+      <article class="card">
+        <p class="eyebrow">{{ item.track }} · {{ item.topic }}</p>
+        <h2>{{ item.title }}</h2>
+        <p>{{ item.description }}</p>
+        <p class="muted">{{ item.difficulty }} · {{ item.resource_type }}</p>
+        <a class="btn btn-secondary" href="{{ item.url }}" target="_blank" rel="noopener noreferrer">Open resource</a>
+      </article>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state panel">
+    <i data-lucide="search-x"></i>
+    <p>No resources match those filters. Clear a filter or reset the search.</p>
+  </div>
+{% endif %}
+{% endblock %}

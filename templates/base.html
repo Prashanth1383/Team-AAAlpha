@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>{% block title %}EduBridge AI{% endblock %} · Team AAAlpha</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://unpkg.com/lucide@0.469.0" defer></script>
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="{{ url_for('pages.landing') }}">
+        <span class="brand-mark" aria-hidden="true">
+          <i data-lucide="graduation-cap"></i>
+        </span>
+        <span>
+          <strong>EduBridge AI</strong>
+          <small>Team AAAlpha</small>
+        </span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
+        <span class="sr-only">Menu</span>
+        <i data-lucide="menu"></i>
+      </button>
+      <nav id="site-nav" class="site-nav" aria-label="Primary">
+        <a href="{{ url_for('pages.dashboard') }}" {% if request.endpoint == 'pages.dashboard' %}aria-current="page"{% endif %}>Dashboard</a>
+        <a href="{{ url_for('pages.goals') }}" {% if request.endpoint == 'pages.goals' %}aria-current="page"{% endif %}>Goals</a>
+        <a href="{{ url_for('pages.quiz') }}" {% if request.endpoint == 'pages.quiz' %}aria-current="page"{% endif %}>Quiz</a>
+        <a href="{{ url_for('pages.study_plan') }}" {% if request.endpoint == 'pages.study_plan' %}aria-current="page"{% endif %}>Study Plan</a>
+        <a href="{{ url_for('pages.resources') }}" {% if request.endpoint == 'pages.resources' %}aria-current="page"{% endif %}>Resources</a>
+        <a href="{{ url_for('pages.progress') }}" {% if request.endpoint == 'pages.progress' %}aria-current="page"{% endif %}>Progress</a>
+        <a href="{{ url_for('pages.profile') }}" {% if request.endpoint == 'pages.profile' %}aria-current="page"{% endif %}>Profile</a>
+        {% if session.get('user_id') %}
+          <a href="{{ url_for('pages.logout') }}">Logout</a>
+        {% else %}
+          <a href="{{ url_for('pages.login') }}">Login</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  {% if is_demo %}
+  <div class="demo-banner" role="status">
+    Use your username and password to sign in, or create a free account to keep your own study space.
+  </div>
+  {% endif %}
+
+  <main id="main">
+    <div class="container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul class="flash-list">
+            {% for category, message in messages %}
+              <li class="flash flash-{{ category }}">{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <strong>EduBridge AI</strong>
+        <p>Personalized learning support for HackOverflow 10.0.</p>
+      </div>
+      <div>
+        <p>Team AAAlpha · Lead: Prashanth R · Member: Mahesh</p>
+      </div>
+    </div>
+  </footer>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

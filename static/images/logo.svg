@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="EduBridge AI">
+  <rect width="64" height="64" rx="16" fill="#12243f"/>
+  <path d="M12 28 L32 16 L52 28 L32 40 Z" fill="#ffffff"/>
+  <path d="M20 32 V44 L32 50 L44 44 V32" fill="none" stroke="#6d5ef7" stroke-width="3"/>
+</svg>

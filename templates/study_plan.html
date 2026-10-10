@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Study plan{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <h1>Personalized study plan</h1>
+    <p class="muted">Plans are generated from your latest quiz, preferences, and the resource catalog. They are a guide, not a promise of mastery.</p>
+  </div>
+</section>
+
+{% if not preferences %}
+  <div class="empty-state panel">
+    <i data-lucide="flag"></i>
+    <p>Save a learning goal before generating a plan.</p>
+    <a class="btn btn-primary" href="{{ url_for('pages.goals') }}">Set a goal</a>
+  </div>
+{% elif not has_quiz %}
+  <div class="empty-state panel">
+    <i data-lucide="clipboard-list"></i>
+    <p>Complete a diagnostic quiz so the plan can prioritize weak topics.</p>
+    <a class="btn btn-primary" href="{{ url_for('pages.quiz') }}">Take quiz</a>
+  </div>
+{% else %}
+  <div class="panel">
+    <p>Generating a new plan replaces the previous one for this demo profile and resets task completion.</p>
+    <button class="btn btn-primary" type="button" id="generate-plan">Generate or refresh plan</button>
+    <p id="plan-status" class="status" hidden></p>
+  </div>
+{% endif %}
+
+{% if current_plan %}
+  <section class="panel">
+    <h2>Current plan</h2>
+    <p>{{ current_plan.plan.summary }}</p>
+    <div class="progress-track" aria-hidden="true">
+      <div class="progress-fill" style="width: {{ current_plan.completion_percent }}%"></div>
+    </div>
+    <p>{{ current_plan.completed_count }} of {{ current_plan.total_count }} tasks complete ({{ "%.0f"|format(current_plan.completion_percent) }}%).</p>
+  </section>
+  <div class="table-wrap panel">
+    <table>
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Topic</th>
+          <th>Objective</th>
+          <th>Minutes</th>
+          <th>Resource</th>
+          <th>Why</th>
+          <th>Done</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for task in current_plan.tasks %}
+          <tr>
+            <td>{{ task.day_number }}</td>
+            <td>{{ task.topic }}</td>
+            <td>{{ task.learning_objective }}</td>
+            <td>{{ task.estimated_minutes }}</td>
+            <td>
+              {% if task.resource_url %}
+                <a href="{{ task.resource_url }}" target="_blank" rel="noopener noreferrer">{{ task.resource_title }}</a>
+              {% else %}
+                {{ task.resource_title or "—" }}
+              {% endif %}
+            </td>
+            <td>{{ task.rationale }}</td>
+            <td>
+              <label class="sr-only" for="task-{{ task.id }}">Mark day {{ task.day_number }} complete</label>
+              <input id="task-{{ task.id }}" type="checkbox" data-task-toggle value="{{ task.id }}" {% if task.is_completed %}checked{% endif %}>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
+{% endblock %}

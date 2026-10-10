@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Diagnostic quiz{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <h1>Diagnostic quiz</h1>
+    <p class="muted">{{ preferences.track }} · {{ questions|length }} questions. Correct answers are revealed only after you submit.</p>
+  </div>
+</section>
+<div id="quiz-app"
+     class="panel"
+     data-track="{{ preferences.track }}"
+     data-analysis-url="{{ url_for('pages.analysis') }}">
+  <div class="quiz-progress" aria-live="polite">
+    <div class="progress-track">
+      <div class="progress-fill" id="quiz-progress-fill"></div>
+    </div>
+    <p id="quiz-progress-label">Question 1 of {{ questions|length }}</p>
+  </div>
+  <form id="quiz-form">
+    {% for question in questions %}
+      <fieldset class="quiz-card" data-question-card {% if not loop.first %}hidden{% endif %}>
+        <legend>Question {{ loop.index }} · {{ question.topic }}</legend>
+        <p>{{ question.question_text }}</p>
+        {% for key, label in [('A', question.option_a), ('B', question.option_b), ('C', question.option_c), ('D', question.option_d)] %}
+          <label class="choice">
+            <input type="radio" name="q-{{ question.id }}" value="{{ key }}" required>
+            <span>{{ key }}. {{ label }}</span>
+          </label>
+        {% endfor %}
+      </fieldset>
+    {% endfor %}
+    <div class="quiz-nav">
+      <button type="button" class="btn btn-ghost" id="quiz-prev" disabled>Previous</button>
+      <button type="button" class="btn btn-secondary" id="quiz-next">Next</button>
+      <button type="submit" class="btn btn-primary" id="quiz-submit" hidden>Submit quiz</button>
+    </div>
+  </form>
+  <div id="quiz-status" class="status" hidden></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+{% endblock %}
